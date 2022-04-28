@@ -2,8 +2,15 @@
 # As was answered in Piazza (question @249), the use
 # of incomplete implementations are allowed.
 #
-# This implementation of Aho-Corasick was sourced from: 
+# This implementation of Aho-Corasick included case insensitivy and was 
+# sourced from the following: 
 # https://www.geeksforgeeks.org/aho-corasick-algorithm-pattern-searching/
+#
+# The algorithm for wildcarding is to split a search word according to its
+# wildcard occurances, use Aho-Corasick to find these substrings, and check
+# that each substring appeared in the correct order and with the correct
+# spacing from each other. More details may be found on page 4 of this:
+# http://www.cbcb.umd.edu/confcour/Spring2010/CMSC858W-materials/Lecture4.pdf
 #############################################################################
 
 
