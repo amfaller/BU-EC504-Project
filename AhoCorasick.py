@@ -83,6 +83,50 @@ class AhoCorasick:
         # Once the Trie has been built, it will contain the number
         # of nodes in Trie which is total number of states required <= max_states
         self.states_count = self.__build_matching_machine()
+        
+    def strrmatch(self, strr, pattern, n, m):
+ 
+        # empty pattern can only match with
+        # empty string
+        if (m == 0):
+            return (n == 0)
+     
+        # lookup table for storing results of
+        # subproblems
+        lookup = [[False for i in range(m + 1)] for j in range(n + 1)]
+     
+        # empty pattern can match with empty string
+        lookup[0][0] = True
+     
+        # Only '*' can match with empty string
+        for j in range(1, m + 1):
+            if (pattern[j - 1] == '*'):
+                lookup[0][j] = lookup[0][j - 1]
+     
+        # fill the table in bottom-up fashion
+        for i in range(1, n + 1):
+            for j in range(1, m + 1):
+     
+                # Two cases if we see a '*'
+                # a) We ignore ‘*’ character and move
+                # to next character in the pattern,
+                # i.e., ‘*’ indicates an empty sequence.
+                # b) '*' character matches with ith
+                # character in input
+                if (pattern[j - 1] == '*'):
+                    lookup[i][j] = lookup[i][j - 1] or lookup[i - 1][j]
+     
+                # Current characters are considered as
+                # matching in two cases
+                # (a) current character of pattern is '?'
+                # (b) characters actually match
+                elif (pattern[j - 1] == '?' or strr[i - 1] == pattern[j - 1]):
+                    lookup[i][j] = lookup[i - 1][j - 1]
+     
+                # If characters don't match
+                else:
+                    lookup[i][j] = False
+        return lookup[n][m]
 
     def __split_wildcard_words(self, wildword):
         # print("Passed word is " + wildword)
@@ -252,9 +296,6 @@ class AhoCorasick:
   
         wordFound = True
         wildCardPossibleFlag = False
-        firstSubstringIndex = -1
-        indexInText = -1
-        distance = 99999
 
         # Traverse the text through the built machine
         # to find all occurrences of words
@@ -267,68 +308,34 @@ class AhoCorasick:
   
             # Match found, store the word in result dictionary
             # First check if this could be a wildcard substring match
-            
-
-
 
             for j in range(len(self.words)):
                 if (self.out[current_state] & (1<<j)) > 0:  # At this point in execution, we have confirmed that a match is found.
 
                     wordFound = True
                     word = self.words[j]
-
-                    # for k in range(len(self.wildcard_substrings)):      # For debugging
-                    #     print(" = " + self.wildcard_substrings[k])      # For debugging
+                    print(self.words)
+                    print(j)
+                    print(self.words[j])
 
                     # Search if the found word is a wildcard substring
                     for k in range(len(self.wildcard_substrings)):
-                        # print("> Looking at " + self.words[j] + " vs " + self.wildcard_substrings[k])
                         if self.words[j] == self.wildcard_substrings[k]:
-                            print(">> Looking at " + self.words[j] + " vs " + self.wildcard_substrings[k])
-                            wordFound = False
-                            # If the latter portion of a wildcard string and it completes a word, set word as detected
-                            if wildCardPossibleFlag is True:
-                                
-                                # print(self.wildcard_substring_indices[self.words[j]][0])
-                                # print(firstSubstringIndex[0])
-                                # distance = self.wildcard_substring_indices[self.words[j]][0]-firstSubstringIndex[0]
-                                if self.wildcard_substring_indices[self.words[j]][0]-firstSubstringIndex[0] == i-indexInText:
-                                    print(" -  LATTER IS " + self.words[j])
-                                    print("  - DIFF IN FIRST: " + str(self.wildcard_substring_indices[self.words[j]][0]-firstSubstringIndex[0]))      # For debugging
-                                    print("  - DIFF IN SECOND: " + str(i-indexInText))
-                                    # print(" - WORD FOUND!")
-                                    word = text[indexInText:i+1]
-                                    wildCardPossibleFlag = False
-                                    firstSubstringIndex = -1
-                                    indexInText = -1
-                                    wordFound = True
-                                elif self.wildcard_substring_indices[self.words[j]][0]-firstSubstringIndex[0] < i-indexInText:
-                                    print("   - Limit reached, wildcard word not possible")
-                                    word = text[indexInText:i+1]
-                                    wildCardPossibleFlag = False
-                                    firstSubstringIndex = -1
-                                    indexInText = -1
-                                    wordFound = False
-                            # If the former portion of a wildcard string, set flags and continue
-                            elif wildCardPossibleFlag is False:
-                                print(" -  FORMER IS " + self.words[j])      # For debugging
-                                wildCardPossibleFlag = True
+                            print(self.wildcard_substrings)
+                            print(self.wildcard_substrings[k])
+                            print(self.wildcard_words[k])
+                            print("yessir")
+                            print(text[current_state:len(self.wildcard_words[k])+1])
+                            if self.strrmatch(text[current_state:len(self.wildcard_words[k])+1], self.wildcard_words[k], len(self.wildcard_words[k]), len(self.wildcard_words[k])):
+                                print("Wildcard word found")
+                                wordFound = True
+                                word = text[current_state:len(self.wildcard_words[k])+1];
+                            else:
+                                print("NOPE")
                                 wordFound = False
-                                firstSubstringIndex = self.wildcard_substring_indices[self.words[j]]
-                                indexInText = i
-                                break
-
-                            # # If out of range, reset all flags
-                            # if distance < i-indexInText:
-                            #     wildCardPossibleFlag = True
-                            #     wordFound = False
-                            #     distance = 99999
-                            
-                  
   
                     if wordFound is True:
                         print("    - APPENDED WORD IS " + word)
-                    # Start index of word is (i-len(word)+1)
                         result[word].append(i-len(word)+1)
   
         # Return the final result dictionary
