@@ -251,4 +251,4 @@ if __name__ == "__main__":
     # Print the result
     for word in result:
         for i in result[word]:
-            print("Word", word, "appears from", i, "to", i+len(word)-1)
+            print("Word", word, "appears from index", i, "to", i+len(word)-1)
