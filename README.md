@@ -1,9 +1,25 @@
 # BU-EC504-Project
-### Spring 2022
+## Spring 2022
 
-A major component of EC504 is the final project.
+### Set Up
+Run on the SCC by installing regex with
+````
+pip3 install --user regex
+````
 
-The goal of this project is to search large texts for the occurrences of specific patterns. 
-This is done via the Aho-Corasick algorithm.
+### Files
+#### mixedTest.py
+Test cases that provide print statements, allowing for comparison between the expected and actual results.
 
-This implementation is extended to search for patterns that can have variations in capitalization, plus the use of wild cards that can substitute for any letter.
+Run with the following command:
+````
+python3.6 mixedTest.py
+````
+
+#### mixedTestUnit.py
+Test cases provided as unit tests.
+
+Run with the following command:
+````
+python3.6 mixedTestUnit.py
+````
