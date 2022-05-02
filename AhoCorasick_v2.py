@@ -188,10 +188,9 @@ class AhoCorasick:
   
   
     # This function finds all occurrences of all words in text.
-    def search_words(self, text):
+    def search_words(self, inText):
         # Convert the text to lowercase to make search case insensitive
-        text = text.lower()
-  
+        text = inText.lower()
         # Initialize current_state to 0 
         current_state = 0
   
@@ -202,7 +201,7 @@ class AhoCorasick:
 
         # Handle wildcard words
         for word in self.wildcardWords:
-            self.findWildcardMatch(result, text, word)
+            self.findWildcardMatch(result, inText, word)
   
         # Traverse the text through the built machine
         # to find all occurrences of words
@@ -229,10 +228,10 @@ class AhoCorasick:
         subStr = pattern.replace(self.wildcard, ".")
 
         # Compile wildcard word to regex
-        regexPat = re.compile(subStr)
-
+        regexPat = regex.compile(subStr)
+        
         # Use re.finditer() to get match and indices
-        for match in re.finditer(regexPat, text):
+        for match in regex.finditer(regexPat, text.lower(), overlapped=True):
             start = match.start()
             end = match.end()
             outputDict[text[start:end]].append(start)
