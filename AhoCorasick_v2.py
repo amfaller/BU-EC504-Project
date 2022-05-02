@@ -19,7 +19,7 @@
 from collections import defaultdict
 
 # re is a regex-matching library that aids in wildcard search.
-import re
+import regex
   
 # For simplicity, Arrays and Queues have been implemented using lists. 
 # If you want to improve performance try using them instead
@@ -229,10 +229,10 @@ class AhoCorasick:
         subStr = pattern.replace(self.wildcard, ".")
 
         # Compile wildcard word to regex
-        regexPat = re.compile(subStr)
-
+        regexPat = regex.compile(subStr)
+        
         # Use re.finditer() to get match and indices
-        for match in re.finditer(regexPat, text):
+        for match in regex.finditer(regexPat, text, overlapped=True):
             start = match.start()
             end = match.end()
             outputDict[text[start:end]].append(start)
@@ -240,7 +240,7 @@ class AhoCorasick:
 # Driver code
 if __name__ == "__main__":
     words = ["he", "she", "hers", "h*s", "p*t", "p**t"]
-    text = "ahishers pets peterpotter"
+    text = "ahishers pets peterpptttr"
   
     # Create an Object to initialize the Trie
     aho_chorasick = AhoCorasick(words)
