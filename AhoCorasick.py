@@ -1,30 +1,26 @@
-#############################################################################
+###############################################################################################
 # As was answered in Piazza (question @249), the use
 # of incomplete implementations are allowed.
 #
-# This implementation of Aho-Corasick included case insensitivy and was 
-# sourced from the following: 
+# This implementation of Aho-Corasick was sourced from: 
 # https://www.geeksforgeeks.org/aho-corasick-algorithm-pattern-searching/
 #
-# The algorithm for wildcarding is to split a search word according to its
-# wildcard occurances, use Aho-Corasick to find these substrings, and check
-# that each substring appeared in the correct order and with the correct
-# spacing from each other. More details may be found on page 4 of this:
-# http://www.cbcb.umd.edu/confcour/Spring2010/CMSC858W-materials/Lecture4.pdf
-#############################################################################
+# Implementations of wildcard string matching may be found here:
+# https://www.geeksforgeeks.org/python-wildcard-substring-search/
+# https://www.tutorialspoint.com/How-do-we-use-re-finditer-method-in-Python-regular-expression
+#
+# These implementations were combined to complete the goal of this project.
+###############################################################################################
 
-
-# Python program for implementation of
-# Aho-Corasick algorithm for string matching
   
 # defaultdict is used only for storing the final output
 # We will return a dictionary where key is the matched word
 # and value is the list of indexes of matched word
 from collections import defaultdict
 
-# Character representing wildcard.
-# ASSUMPTION: 1 wildcard per search word
-wildcard = '*'
+# re is a regex-matching library that aids in wildcard search.
+import regex
+import time
   
 # For simplicity, Arrays and Queues have been implemented using lists. 
 # If you want to improve performance try using them instead
@@ -65,119 +61,33 @@ class AhoCorasick:
         # so that our search is case insensitive
         for i in range(len(words)):
           words[i] = words[i].lower()
+
+        # This character represents a wildcard.
+        self.wildcard = '*'
             
         # All the words in dictionary which will be used to create Trie
         # The index of each keyword is important:
         # "out[state] & (1 << i)" is > 0 if we just found word[i]
         # in the text.
-        self.words = words
-        self.wildcard_words = []
-        self.wildcard_substrings = []
+        self.words = []
+        self.wildcardWords = []
+        for word in words:
+            if self.wildcard in word:
+                self.wildcardWords.append(word)
+            else:
+                self.words.append(word)
 
-        # for word in self.words:
-        #     print(word)
-
-        # This defaultdict contains the indices required for each wildcarded word's substrings.
-        self.wildcard_substring_indices = defaultdict(list)
-  
         # Once the Trie has been built, it will contain the number
         # of nodes in Trie which is total number of states required <= max_states
         self.states_count = self.__build_matching_machine()
+
         
-    def strrmatch(self, strr, pattern, n, m):
- 
-        # empty pattern can only match with
-        # empty string
-        if (m == 0):
-            return (n == 0)
-     
-        # lookup table for storing results of
-        # subproblems
-        lookup = [[False for i in range(m + 1)] for j in range(n + 1)]
-     
-        # empty pattern can match with empty string
-        lookup[0][0] = True
-     
-        # Only '*' can match with empty string
-        for j in range(1, m + 1):
-            if (pattern[j - 1] == '*'):
-                lookup[0][j] = lookup[0][j - 1]
-     
-        # fill the table in bottom-up fashion
-        for i in range(1, n + 1):
-            for j in range(1, m + 1):
-     
-                # Two cases if we see a '*'
-                # a) We ignore ‘*’ character and move
-                # to next character in the pattern,
-                # i.e., ‘*’ indicates an empty sequence.
-                # b) '*' character matches with ith
-                # character in input
-                if (pattern[j - 1] == '*'):
-                    lookup[i][j] = lookup[i][j - 1] or lookup[i - 1][j]
-     
-                # Current characters are considered as
-                # matching in two cases
-                # (a) current character of pattern is '?'
-                # (b) characters actually match
-                elif (pattern[j - 1] == '?' or strr[i - 1] == pattern[j - 1]):
-                    lookup[i][j] = lookup[i - 1][j - 1]
-     
-                # If characters don't match
-                else:
-                    lookup[i][j] = False
-        return lookup[n][m]
-
-    def __split_wildcard_words(self, wildword):
-        # print("Passed word is " + wildword)
-        # print("At time of splitting, word array is:")
-        # for word in self.words:
-        #     print("\t" + word)
-        wildCardIndex = 0
-        oldWildCardIndex = 0
-        try:
-            while wildword.index('*', wildCardIndex+1):
-                wildCardIndex = wildword.index('*', wildCardIndex+1)
-                self.words.append(wildword[oldWildCardIndex:wildCardIndex])
-                # print(wildword[oldWildCardIndex:wildCardIndex])     # For debugging
-                self.wildcard_substrings.append(wildword[oldWildCardIndex:wildCardIndex])
-                self.wildcard_substring_indices[wildword[oldWildCardIndex:wildCardIndex]].append(oldWildCardIndex)
-                oldWildCardIndex = wildCardIndex+1
-        except Exception as e:
-            oldWildCardIndex = wildCardIndex+1
-            self.words.append(wildword[oldWildCardIndex::])
-            self.wildcard_substrings.append(wildword[oldWildCardIndex::])
-            self.wildcard_substring_indices[wildword[oldWildCardIndex::]].append(oldWildCardIndex)
-
-        # print("Now, word array is:")
-        # for word in self.words:
-        #     print("\t" + word)
-
-        # print(self.wildcard_substring_indices[wildword])
-
+  
   
     # Builds the String matching machine.
     # Returns the number of states that the built machine has.
     # States are numbered 0 up to the return value - 1, inclusive.
     def __build_matching_machine(self):
-
-        # Preprocess any wildcard-containing words to its substrings.
-        # Remove the word from the search list, and replace it 
-        # with its substrings.
-        wordsLength = len(self.words)
-        indexer = 0
-        while indexer < wordsLength:
-            # print("Checking word " + self.words[indexer])
-            if wildcard in self.words[indexer]:
-                # print("Wildcard found in " + self.words[indexer])
-                self.wildcard_words.append(self.words[indexer])
-                self.__split_wildcard_words(self.words[indexer])
-                self.words.remove(self.words[indexer])
-                wordsLength = len(self.words)
-                indexer = 0
-            else: indexer += 1
-
-
         k = len(self.words)
   
         # Initially, we just have the 0 state
@@ -192,9 +102,6 @@ class AhoCorasick:
             # Process all the characters of the current word
             for character in word:
                 ch = ord(character) - 97 # Ascii value of 'a' = 97
-
-                if character == '*':
-                    ch += 97
   
                 # Allocate a new node (create a new state)
                 # if a node for ch doesn't exist.
@@ -293,67 +200,62 @@ class AhoCorasick:
         # Key here is the found word
         # Value is a list of all occurrences start index
         result = defaultdict(list)
-  
-        wordFound = True
-        wildCardPossibleFlag = False
 
+        # Handle wildcard words
+        for word in self.wildcardWords:
+            self.findWildcardMatch(result, text, word)
+  
         # Traverse the text through the built machine
         # to find all occurrences of words
         for i in range(len(text)):
-            print("> Current index: " + str(i))
             current_state = self.__find_next_state(current_state, text[i])
   
             # If match not found, move to next state
             if self.out[current_state] == 0: continue
   
             # Match found, store the word in result dictionary
-            # First check if this could be a wildcard substring match
-
             for j in range(len(self.words)):
-                if (self.out[current_state] & (1<<j)) > 0:  # At this point in execution, we have confirmed that a match is found.
-
-                    wordFound = True
+                if (self.out[current_state] & (1<<j)) > 0:
                     word = self.words[j]
-                    print(self.words)
-                    print(j)
-                    print(self.words[j])
-
-                    # Search if the found word is a wildcard substring
-                    for k in range(len(self.wildcard_substrings)):
-                        if self.words[j] == self.wildcard_substrings[k]:
-                            print(self.wildcard_substrings)
-                            print(self.wildcard_substrings[k])
-                            print(self.wildcard_words[k])
-                            print("yessir")
-                            print(text[current_state:len(self.wildcard_words[k])+1])
-                            if self.strrmatch(text[current_state:len(self.wildcard_words[k])+1], self.wildcard_words[k], len(self.wildcard_words[k]), len(self.wildcard_words[k])):
-                                print("Wildcard word found")
-                                wordFound = True
-                                word = text[current_state:len(self.wildcard_words[k])+1];
-                            else:
-                                print("NOPE")
-                                wordFound = False
   
-                    if wordFound is True:
-                        print("    - APPENDED WORD IS " + word)
-                        result[word].append(i-len(word)+1)
+                    # Start index of word is (i-len(word)+1)
+                    result[word].append(i-len(word)+1)
   
         # Return the final result dictionary
         return result
+
+    # This function handles all occurrences of words containing wildcards.
+    def findWildcardMatch(self, outputDict, text, pattern):
+        # Replace our wildcard with regex wildcard
+        #print(pattern)
+        subStr = pattern.replace(self.wildcard, ".")
+        # Compile wildcard word to regex
+        regexPat = regex.compile(subStr)
+        
+        # Use re.finditer() to get match and indices
+        for match in regex.finditer(regexPat, text, overlapped=True):
+            start = match.start()
+            end = match.end()
+            outputDict[text[start:end]].append(start)
   
 # Driver code
 if __name__ == "__main__":
-    words = ["he", "she", "hers", "h*s", "p*t"]
-    text = "ahishers pets pepoterpotter"
+    with open(r"C:\Users\bmahabir\Desktop\BU-EC504-Project\words.txt") as f:
+        words = f.read().splitlines()
+    
+    text_file = open(r"C:\Users\bmahabir\Desktop\BU-EC504-Project\text.txt", "r")
+    text = text_file.read()
+    text_file.close()
   
     # Create an Object to initialize the Trie
+    start_time = time.time()
     aho_chorasick = AhoCorasick(words)
-  
     # Get the result
     result = aho_chorasick.search_words(text)
+    print("--- %s seconds ---" % (time.time() - start_time))
+    
   
     # Print the result
-    print("\n== RESULTS ==")
     for word in result:
         for i in result[word]:
             print("Word", word, "appears from", i, "to", i+len(word)-1)
