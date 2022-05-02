@@ -8,7 +8,7 @@ pip3 install --user regex
 ````
 
 ### Files
-#### mixedTest.py
+#### **mixedTest.py**
 Test cases that provide print statements, allowing for comparison between the expected and actual results.
 
 Run with the following command:
@@ -16,7 +16,7 @@ Run with the following command:
 python3.6 mixedTest.py
 ````
 
-#### mixedTestUnit.py
+#### **mixedTestUnit.py**
 Test cases provided as unit tests.
 
 Run with the following command:
