@@ -20,7 +20,7 @@ from collections import defaultdict
 
 # re is a regex-matching library that aids in wildcard search.
 import re
-  
+
 # For simplicity, Arrays and Queues have been implemented using lists. 
 # If you want to improve performance try using them instead
 class AhoCorasick:
@@ -80,9 +80,6 @@ class AhoCorasick:
         # of nodes in Trie which is total number of states required <= max_states
         self.states_count = self.__build_matching_machine()
 
-        
-  
-  
     # Builds the String matching machine.
     # Returns the number of states that the built machine has.
     # States are numbered 0 up to the return value - 1, inclusive.
@@ -169,7 +166,6 @@ class AhoCorasick:
           
         return states
   
-  
     # Returns the next state the machine will transition to using goto
     # and failure functions.
     # current_state - The current state of the machine. Must be between
@@ -188,9 +184,7 @@ class AhoCorasick:
   
   
     # This function finds all occurrences of all words in text.
-    def search_words(self, inText):
-        # Convert the text to lowercase to make search case insensitive
-        text = inText.lower()
+    def search_words(self, text):
         # Initialize current_state to 0 
         current_state = 0
   
@@ -201,7 +195,7 @@ class AhoCorasick:
 
         # Handle wildcard words
         for word in self.wildcardWords:
-            self.findWildcardMatch(result, inText, word)
+            self.findWildcardMatch(result, text, word)
   
         # Traverse the text through the built machine
         # to find all occurrences of words
