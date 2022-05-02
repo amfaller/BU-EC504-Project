@@ -239,6 +239,8 @@ class AhoCorasick:
   
 # Driver code
 if __name__ == "__main__":
+
+    print("== Sample Test Case =========================")
     words = ["he", "she", "hers", "h*s", "p*t", "p**t"]
     text = "ahishers pets peterpptttr"
   
@@ -252,3 +254,31 @@ if __name__ == "__main__":
     for word in result:
         for i in result[word]:
             print("Word", word, "appears from index", i, "to", i+len(word)-1)
+
+
+    print("\n\n== Test Case: Wildcards at Beginning / End of Search Words =========================")
+    words = ["**ing", "hors*", "ol*", "*oad"]
+    text = "I am going to take my horse to that old town road and I am going to ride until I can no longer"
+
+    aho_chorasick = AhoCorasick(words)
+    result = aho_chorasick.search_words(text)
+
+    print(" > Search words:")
+    print(words)
+    print(" > Text:")
+    print(text)
+  
+    print("\n > Results:")
+    for word in result:
+        for i in result[word]:
+            print(" - Word", word, "appears from index", i, "to", i+len(word)-1)
+
+    print("\n > Expected:")
+    print(" - Word going appears from index 5 to 9")
+    print(" - Word going appears from index 59 to 63")
+    print(" - Word horse appears from index 22 to 26")
+    print(" - Word old appears from index 36 to 38")
+    print(" - Word road appears from index 45 to 48")
+
+
+
