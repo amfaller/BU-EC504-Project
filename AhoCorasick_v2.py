@@ -236,49 +236,39 @@ class AhoCorasick:
             start = match.start()
             end = match.end()
             outputDict[text[start:end]].append(start)
-  
+
+    
+def outputTestCase(text, words, caseString, expectedOutput):
+        case = "\n\n== {caseString} ".format(caseString=caseString)
+        case = case.ljust(85,"=")
+        print(case, "\n")
+
+        aho_chorasick = AhoCorasick(words)
+        result = aho_chorasick.search_words(text)
+
+        print(" > Search words:")
+        print(words)
+        print("\n > Text:")
+        print(text)
+    
+        print("\n > Results:")
+        for word in result:
+            for i in result[word]:
+                print(" - Word", word, "appears from index", i, "to", i+len(word)-1)
+        
+        print("\n > Expected:")
+        print(expectedOutput)
+
 # Driver code
 if __name__ == "__main__":
-
-    print("== Sample Test Case =========================")
-    words = ["he", "she", "hers", "h*s", "p*t", "p**t"]
-    text = "ahishers pets peterpptttr"
-  
-    # Create an Object to initialize the Trie
-    aho_chorasick = AhoCorasick(words)
-  
-    # Get the result
-    result = aho_chorasick.search_words(text)
-  
-    # Print the result
-    for word in result:
-        for i in result[word]:
-            print("Word", word, "appears from index", i, "to", i+len(word)-1)
-
-
-    print("\n\n== Test Case: Wildcards at Beginning / End of Search Words =========================")
-    words = ["**ing", "hors*", "ol*", "*oad"]
-    text = "I am going to take my horse to that old town road and I am going to ride until I can no longer"
-
-    aho_chorasick = AhoCorasick(words)
-    result = aho_chorasick.search_words(text)
-
-    print(" > Search words:")
-    print(words)
-    print(" > Text:")
-    print(text)
-  
-    print("\n > Results:")
-    for word in result:
-        for i in result[word]:
-            print(" - Word", word, "appears from index", i, "to", i+len(word)-1)
-
-    print("\n > Expected:")
-    print(" - Word going appears from index 5 to 9")
-    print(" - Word going appears from index 59 to 63")
-    print(" - Word horse appears from index 22 to 26")
-    print(" - Word old appears from index 36 to 38")
-    print(" - Word road appears from index 45 to 48")
-
+    caseList = ["Sample Test Case", "Test Case: Wildcards at Beginning / End of Search Words", "Test Case: Capitalization"]
+    wordsList = [["hers", "h*s", "p*t", "p**t"], ["**ing", "hors*", "ol*", "*oad"], ["thou", "sand", "thousand", "i ", "the", "CAN"]]
+    textStringList = ["ahishers pets peterpptttr", "I am going to take my horse to that old town road and I am going to ride until I can no longer", "ThouSand miLes from Shore, I cAN float on THE water"]
+    expectedOutList = [" - Word his appears from index 1 to 3\n - Word pet appears from index 9 to 11\n - Word pet appears from index 14 to 16\n - Word ppt appears from index 19 to 21\n - Word ptt appears from index 20 to 22\n - Word pptt appears from index 19 to 22\n - Word pttt appears from index 20 to 23\n - Word hers appears from index 4 to 7",
+    " - Word going appears from index 5 to 9\n - Word going appears from index 59 to 63\n - Word horse appears from index 22 to 26\n - Word old appears from index 36 to 38\n - Word road appears from index 45 to 48",
+    " - Word thou appears from index 0 to 3\n - Word sand appears from index 4 to 7\n - Word thousand appears from index 0 to 7\n - Word i  appears from index 27 to 28\n - Word can appears from index 29 to 3\n - Word the appears from index 42 to 44"]
+    
+    for i in range(len(caseList)):
+        outputTestCase(textStringList[i], wordsList[i], caseList[i], expectedOutList[i])
 
 
