@@ -162,8 +162,8 @@ class AhoCorasick:
   
                     result[word].append(i-len(word)+1)
 
-        # Remove potential duplicate values for each word
-        result = { key : list(set(value)) for key, value in result.items()}
+        # # Remove potential duplicate values for each word
+        # result = { key : list(set(value)) for key, value in result.items()}
 
         return result
 
@@ -184,16 +184,3 @@ class AhoCorasick:
             start = match.start()
             end = match.end()
             outputDict[text[start:end]].append(start)
-  
-# Driver code
-if __name__ == "__main__":
-    words = ["he", "she", "hers", "h*s", "p*t", "p**t"]
-    text = "ahishers pets peterpotter"
-  
-    aho_chorasick = AhoCorasick(words)
-    result = aho_chorasick.search_words(text)
-  
-    # Print the result
-    for word in result:
-        for i in result[word]:
-            print("Word", word, "appears from index", i, "to", i+len(word)-1)
