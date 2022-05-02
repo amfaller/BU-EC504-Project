@@ -21,8 +21,7 @@ from collections import defaultdict
 # re is a regex-matching library that aids in wildcard search.
 import regex
 
-
-# For simplicity, Arrays and Queues have been implemented using lists.
+# For simplicity, Arrays and Queues have been implemented using lists. 
 # If you want to improve performance try using them instead
 class AhoCorasick:
     def __init__(self, words):
@@ -226,53 +225,43 @@ class AhoCorasick:
 
         # Compile wildcard word to regex
         regexPat = regex.compile(subStr)
-
+        
         # Use re.finditer() to get match and indices
         for match in regex.finditer(regexPat, text, overlapped=True):
             start = match.start()
             end = match.end()
             outputDict[text[start:end]].append(start)
+    
+def outputTestCase(text, words, caseString, expectedOutput):
+        case = "\n\n== {caseString} ".format(caseString=caseString)
+        case = case.ljust(85,"=")
+        print(case, "\n")
 
+        aho_chorasick = AhoCorasick(words)
+        result = aho_chorasick.search_words(text)
+
+        print(" > Search words:")
+        print(words)
+        print("\n > Text:")
+        print(text)
+    
+        print("\n > Results:")
+        for word in result:
+            for i in result[word]:
+                print(" - Word", word, "appears from index", i, "to", i+len(word)-1)
+        
+        print("\n > Expected:")
+        print(expectedOutput)
 
 # Driver code
 if __name__ == "__main__":
-
-    print("== Sample Test Case =========================")
-    words = ["he", "she", "hers", "h*s", "p*t", "p**t"]
-    text = "ahishers pets peterpptttr"
-
-    # Create an Object to initialize the Trie
-    aho_chorasick = AhoCorasick(words)
-
-    # Get the result
-    result = aho_chorasick.search_words(text)
-
-    # Print the result
-    for word in result:
-        for i in result[word]:
-            print("Word", word, "appears from index", i, "to", i + len(word) - 1)
-
-    print("\n\n===== Test Case: Word Overlap  =========================")
-    words = ["veg", "get", "table", "tab", "able", "vegetable"]
-    text = "vegetable"
-
-    aho_chorasick = AhoCorasick(words)
-    result = aho_chorasick.search_words(text)
-
-    print(" > Search words:")
-    print(words)
-    print(" > Text:")
-    print(text)
-
-    print("\n > Results:")
-    for word in result:
-        for i in result[word]:
-            print(" - Word", word, "appears from index", i, "to", i + len(word) - 1)
-
-    print("\n > Expected:")
-    print(" - Word veg appears from index 0 to 2")
-    print(" - Word get appears from index 2 to 4")
-    print(" - Word tab appears from index 4 to 6")
-    print(" - Word table appears from index 4 to 8")
-    print(" - Word able appears from index 5 to 8")
-    print(" - Word vegetable appears from index 0 to 8")
+    caseList = ["Sample Test Case", "Test Case: Wildcards at Beginning / End of Search Words", "Test Case: Capitalization", "Test Case: Word Overlap"]
+    wordsList = [["hers", "h*s", "p*t", "p**t"], ["**ing", "hors*", "ol*", "*oad"], ["thou", "sand", "thousand", "i ", "the", "CAN"], ["veg", "get", "table", "tab", "able", "vegetable"]]
+    textStringList = ["ahishers pets peterpptttr", "I am going to take my horse to that old town road and I am going to ride until I can no longer", "ThouSand miLes from Shore, I cAN float on THE water", "vegetable"]
+    expectedOutList = [" - Word his appears from index 1 to 3\n - Word pet appears from index 9 to 11\n - Word pet appears from index 14 to 16\n - Word ppt appears from index 19 to 21\n - Word ptt appears from index 20 to 22\n - Word pptt appears from index 19 to 22\n - Word pttt appears from index 20 to 23\n - Word hers appears from index 4 to 7",
+      " - Word going appears from index 5 to 9\n - Word going appears from index 59 to 63\n - Word horse appears from index 22 to 26\n - Word old appears from index 36 to 38\n - Word road appears from index 45 to 48",
+      " - Word thou appears from index 0 to 3\n - Word sand appears from index 4 to 7\n - Word thousand appears from index 0 to 7\n - Word i  appears from index 27 to 28\n - Word can appears from index 29 to 31\n - Word the appears from index 42 to 44",
+      " - Word veg appears from index 0 to 2\n - Word get appears from index 2 to 4\n - Word tab appears from index 4 to 6\n - Word table appears from index 4 to 8\n - Word able appears from index 5 to 8\n - Word vegetable appears from index 0 to 8"]
+    
+    for i in range(len(caseList)):
+        outputTestCase(textStringList[i], wordsList[i], caseList[i], expectedOutList[i])
