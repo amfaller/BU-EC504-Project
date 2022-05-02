@@ -227,7 +227,11 @@ class AhoCorasick:
         regexPat = regex.compile(subStr)
         
         # Use re.finditer() to get match and indices
-        for match in regex.finditer(regexPat, text, overlapped=True):
+        for match in regex.finditer(regexPat, text.lower(), overlapped=True):
+            # Remove any matches with spaces
+            if bool(regex.search(r"\s", match.group())):
+                continue
+                
             start = match.start()
             end = match.end()
             outputDict[text[start:end]].append(start)
