@@ -184,6 +184,9 @@ class AhoCorasick:
 
     # This function finds all occurrences of all words in text.
     def search_words(self, text):
+        # Convert the text to lowercase to make search case insensitive
+        text = text.lower()
+        
         # Initialize current_state to 0
         current_state = 0
 
