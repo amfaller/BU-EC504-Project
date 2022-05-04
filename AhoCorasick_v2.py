@@ -253,8 +253,7 @@ def outputTestCase(text, words, caseString, expectedOutput):
         for word in result:
             if word.isalpha():
                 for i in result[word]:
-                    print(" - Word", word, "appears from index", i, "to", i+len(word)-1)
-        
+                    print(" - Word", text[i:i+len(word):1], "appears from index", i, "to", i+len(word)-1)
         print("\n > Expected:")
         print(expectedOutput)
 
