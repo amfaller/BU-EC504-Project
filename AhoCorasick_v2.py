@@ -186,7 +186,7 @@ class AhoCorasick:
     def search_words(self, text):
         # Convert the text to lowercase to make search case insensitive
         text = text.lower()
-
+        
         # Initialize current_state to 0
         current_state = 0
 
