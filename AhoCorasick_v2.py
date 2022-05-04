@@ -264,8 +264,7 @@ if __name__ == "__main__":
     textStringList = ["ahishers pets peterpptttr", "I am going to take my horse to that old town road and I am going to ride until I can no longer", "ThouSand miLes from Shore, I cAN float on THE water", "vegetable"]
     expectedOutList = [" - Word his appears from index 1 to 3\n - Word pet appears from index 9 to 11\n - Word pet appears from index 14 to 16\n - Word ppt appears from index 19 to 21\n - Word ptt appears from index 20 to 22\n - Word pptt appears from index 19 to 22\n - Word pttt appears from index 20 to 23\n - Word hers appears from index 4 to 7",
       " - Word going appears from index 5 to 9\n - Word going appears from index 59 to 63\n - Word horse appears from index 22 to 26\n - Word old appears from index 36 to 38\n - Word road appears from index 45 to 48",
-      " - Word thou appears from index 0 to 3\n - Word sand appears from index 4 to 7\n - Word thousand appears from index 0 to 7\n - Word i  appears from index 27 to 28\n - Word can appears from index 29 to 31\n - Word the appears from index 42 to 44",
+      " - Word Thou appears from index 0 to 3\n - Word Sand appears from index 4 to 7\n - Word ThouSand appears from index 0 to 7\n - Word cAN appears from index 29 to 31\n - Word THE appears from index 42 to 44",
       " - Word veg appears from index 0 to 2\n - Word get appears from index 2 to 4\n - Word tab appears from index 4 to 6\n - Word table appears from index 4 to 8\n - Word able appears from index 5 to 8\n - Word vegetable appears from index 0 to 8"]
-    
     for i in range(len(caseList)):
         outputTestCase(textStringList[i], wordsList[i], caseList[i], expectedOutList[i])
